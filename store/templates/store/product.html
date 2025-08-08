@@ -1,0 +1,66 @@
+{% extends 'store/base.html' %}
+{% block content %}
+
+<div style="width: 700px; height: 420px;background-color: #343638; margin-top: 30px ;margin-left: 50px;display: flex;flex-direction: row;">
+  <div style="flex: 1;margin: 10px;"><img style="width: 220px;height: inherit;" src="{{product.image.url}}" alt="{{product.name}}"></div>
+  <div style="flex: 3;width: 100%;text-align: center;margin: 30px;color: white;">
+    <div style="font-weight:600;font-size: 30px;">{{product.name}}</div>
+    <div ><textarea  cols="40" rows="3" style=" resize:none;background-color: #343638;border: none;color: white;" >{{product.description}}</textarea></div>
+    <br>
+    {% if product.on_sale %}
+    
+    <div style="font-weight: 600;font-size: 30px;"><strike>${{product.price}}</strike></div>
+    <div style="font-weight: 600;font-size: 30px;">${{product.sale_price}}</div>
+    {% else %}
+    <div style="font-weight: 600;font-size: 30px;">${{product.price}}</div>
+    {% endif %}
+    <div style="display: none;" class="id" value="{{product.id}}">{{product.id}}</div>
+    <br>
+    <div class="row justify-content-center">
+    <div class="col-md-2">Quantity:  </div>
+    <div class="col-md-2">
+    <select class="form-select form-select-sm" style="width: 100px;" id="quantity">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+
+    </select>
+    </div>
+    </div>
+    <br>
+    <div><button style="background-color: #343638;padding: 5px; border-radius: 5px;border-color: white;"><a style="display: inline-block; text-decoration: none;color: white; font-size: medium;font-weight: bold;" href="{% url 'home' %}">Home</a></button>
+    <button class="add_to_cart" style="background-color: #343638;padding: 5px; border-radius: 5px;border-color: white;"><a style=" display:inline-block;text-decoration:  none;color: white; font-size: medium;font-weight: bold;">Add to cart</a></button></div>
+      
+  </div>
+
+</div>
+<br>
+{% include 'store/footer.html' %}
+<script>
+    let button=document.querySelector('.add_to_cart')
+  button.addEventListener('click',function(){
+ 
+    fetch('/cart/add/',{
+      method:'post',
+      body:JSON.stringify({
+        product_id:document.querySelector('.add_to_cart').parentElement.parentElement.querySelector('.id').innerHTML,
+        product_qty:document.querySelector('#quantity').value
+      })
+      })
+    .then(function(response){
+      return response.json()
+      // document.querySelector('#cart_element').innerHTML=
+    })
+    .then(function(data){
+      document.querySelector('#cart_element').innerHTML=data.quantity;
+      location.reload();
+      
+    })
+    
+  
+    
+  })
+</script>
+{% endblock content%}

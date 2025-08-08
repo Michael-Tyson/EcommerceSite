@@ -1,0 +1,43 @@
+{% extends 'store/base.html' %}
+{% block content %}
+
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Login</h1>
+                    <br>
+                    <p class="lead fw-normal text-white-50 mb-0">Login to website</p>
+                </div>
+            </div>
+        </header>
+        <br>
+<div class="bg-dark" style="position: relative;left: 420px; width: 500px; height: 400px;">
+  <div style="position: absolute; left: 60px; top: 60px;">
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div><label for="Username" class="text-white" style=" font-weight: bold;">Username</label></div>
+    
+    <div>
+          <input type="text" name="username" placeholder="Enter username" style="border-radius: 5px; width: 300px; height: 40px">
+
+    </div>
+    <div>
+      <label for="Password" class="text-white" style=" font-weight: bold;">Password</label>
+    </div>
+    
+    <div>
+      <input type="password" name="password" placeholder="Enter password" style="border-radius: 5px; width: 300px; height: 40px;">
+    </div>
+    
+    <div><input type="submit" value="Login" style="background-color: rgb(0, 0, 0);color: white; border-radius: 5px;margin-top: 10px;padding-top: 5px;padding-bottom: 5px ;padding-left:10px ;padding-right:10px">
+  </div>
+    </form>
+  <h3 class="text-white">Don't have an account? <a href="{% url 'register' %}">Register here</a></h3>
+  </div>
+  
+  
+</div>
+  
+  <br><br><br>
+  {% include 'store/footer.html' %}
+{% endblock %}

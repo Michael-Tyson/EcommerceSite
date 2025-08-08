@@ -1,0 +1,74 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">view what you got in cart</p>
+                </div>
+            </div>
+        </header>
+<div style="display: flex;flex-direction: row; background-color: #343638;margin: 70px;color: white;padding: 20px;">
+      
+    
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Items</h5>
+      {% for product in products %}
+      <div>{{product.product.name}}
+</div> 
+<hr>
+     {% endfor %}
+
+      </div>
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Quantity</h5>
+        {% for product in products %}
+      <div>{{product.qty}}</div>
+      <hr>
+      {% endfor %}
+
+      </div>
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Subtotal</h5>
+        {% for product in products %}
+        {% if product.product.on_sale %}
+      <div>{{product.product.sale_price}} x {{ product.qty}}= ${{product.sub_total}}</div> 
+      {% else %}
+      <div>{{product.product.price}} x {{ product.qty}}= ${{product.sub_total}}</div> 
+      {% endif %}
+      <hr>
+      {% endfor %}
+      <hr>
+      
+      <h5>Total:  ${{total_price}}</h5>
+<a class="btn btn-success" style="width: 100px;" href="{% url 'view_cart' %}">Update</a>
+
+      
+
+      </div>
+
+    </div>
+    
+    <div style="position: relative;left: 420px; width: 450px; height: 730px;" class="bg-dark py-5">
+      <div style="position: absolute; left: 60px; top: 60px;">
+   <form action="{% url 'billing_info' %}" method="post">
+    {% csrf_token %}
+      {{form.as_p}}
+<button class=" btn btn-secondary" type="submit">Continue to Billing</button>
+    
+ </form>
+ <br><br>
+ 
+
+  </div>
+    </div>
+  
+  
+
+
+<br><br><br><br>
+
+{% include 'store/footer.html' %}
+{% endblock %}
+
+    

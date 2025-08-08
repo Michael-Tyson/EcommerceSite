@@ -1,0 +1,65 @@
+{% extends 'store/base.html' %}
+{% load math_filters %}
+
+
+{% block content %}
+<div class="bg bg-dark text-white" style="padding:30px;width: 500px;margin-left: 300px;margin-top: 50px;display: flex;flex-direction: column;border-radius: 2px;">
+  <div style="text-align: center;"><h2>{{order}}</h2></div>
+
+  <div><h5>Customer:</h5> {{order.shipping_full_name}}</div>
+  <hr>
+  <div><h5>Phone:</h5> {{order.phone}}</div>
+  <hr>
+  <div><h5>Shipping Address :</h5> <pre>{{order.address}}</pre></div>
+  <hr>
+  <div><h5>Total: </h5>${{order.amount}}</div>
+  <hr>
+  <div><h5>Order Created: </h5>{{order.date}}</div>
+  <hr>
+  {% if order.shipped %}
+  <div><h5>Order Shipped: </h5>{{order.shipping_date}}</div>
+  <hr>
+  <form action="{% url 'view_order' order.id %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="shipping" value="false">
+    <input style="margin-left: 150px;" type="submit" class="btn btn-danger" value="Mark Unshipped">
+  </form>
+  {% else %}
+  <form action="{% url 'view_order' order.id %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="shipping" value="True">
+    <input style="margin-left: 150px;" type="submit" class="btn btn-success" value="Mark Shipped">
+  </form>
+  {% endif %}
+</div>
+<h3>Items:</h3>
+<div style="display: flex;flex-direction: row; background-color: #343638;margin: 70px;color: white;padding: 20px;">
+      
+    
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Items</h5>
+      {% for item in orderitems %}
+      <div>{{item.product.name}}
+</div> 
+     {% endfor %}
+
+      </div>
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Quantity</h5>
+        {% for item in orderitems %}
+      <div>{{item.quantity}}</div>
+      {% endfor %}
+
+      </div>
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Subtotal</h5>
+        {% for item in orderitems %}
+        {% if item.product.on_sale %}
+      <div>{{item.product.sale_price}} x {{ item.quantity}}= ${{ item.product.sale_price | multiply:item.quantity }}</div> 
+      {% else %}
+      <div>{{item.product.price}} x {{ item.quantity}}= ${{ item.product.price | multiply:item.quantity }}</div> 
+      {% endif %}
+      {% endfor %}
+  
+
+{% endblock content %}

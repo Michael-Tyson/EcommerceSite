@@ -1,0 +1,76 @@
+<!-- Navigation-->
+  {% if messages %}
+        {% for message in messages %}
+        <div  style="margin-right: 100px;margin-left: 100px ;margin-top: 10px ;z-index: 1000;background-color: aqua; display: flex;flex-direction: row; width: 100%;">
+            <div style="flex: 6;">{{message}}</div>
+            <div style="flex: 1;background-color: aliceblue; height: 30px; width: 20px;position: absolute;right: 40px;animation-timeline: 2;"  onclick="this.parentElement.style.display='none'">x</div>
+        </div>
+
+        {% endfor %}
+        {% endif %}
+       
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#!">Django Store</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'about_path' %}">About</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'categories' %}">All Products</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                {% for category in categories %}
+                                <li><a class="dropdown-item" href="{% url 'category' category.name %}">{{category.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% if user.is_authenticated %}
+                            
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Update</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'update_user' %}">Update Credentials</a></li>
+                                <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update info</a></li>
+
+                             
+                            </ul>
+                            {% if user.is_superuser %}
+                            <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orders</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'shipped_orders' %}">Shipped Orders</a></li>
+                                <li><a class="dropdown-item" href="{% url 'unshipped_orders' %}">Unshipped Orders</a></li>
+                            </ul>
+                              
+                        </li>
+                        {% endif %}
+
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+
+                        {% endif %}
+                        
+                                
+                            </ul>
+                        </li>
+                    </ul>
+
+                    
+
+                    <form class="d-flex"> 
+                        <a  href="{% url 'view_cart' %}" class="btn btn-outline-dark">
+                            <i class="bi-cart-fill me-1"></i>Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_element">{{cart_length}}</span>
+
+                        </a>
+                       
+                    </form>
+                  
+                </div>
+            </div>
+        </nav>

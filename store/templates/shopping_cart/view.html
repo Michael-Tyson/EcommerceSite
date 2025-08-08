@@ -1,0 +1,165 @@
+{% extends 'store/base.html' %}
+{% block content %}
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">view what you got in cart</p>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+        <div id="emptycart" style="font-weight: 600;font-size: 30px;text-align: center;display: none;">Buy Something you poor Bitch!</div>
+
+            {% if products %}
+                    {% for product in products %}
+                    <div id="product" style="width: 700px; height: 400px;background-color: #343638; margin-top: 30px ;margin-left: 50px;display: flex;flex-direction: row;">
+                    <div style="flex: 1;margin: 10px;"><img style="width: 220px;height: inherit;" src="{{product.product.image.url}}" alt="{{product.product.name}}"></div>
+        <div style="flex: 3;width: 100%;text-align: center;margin: 30px;color: white;">
+        <div style="font-weight:600;font-size: 30px;">{{product.product.name}}</div>
+        <div ><textarea  cols="40" rows="3" style=" resize:none;background-color: #343638;border: none;color: white;" >{{product.product.description}}</textarea></div>
+        <br>
+        {% if product.product.on_sale %}
+        
+        <div style="font-weight: 600;font-size: 30px;"><strike>${{product.product.price}}</strike></div>
+        <div style="font-weight: 600;font-size: 30px;">${{product.product.sale_price}}</div>
+        {% else %}
+        <div style="font-weight: 600;font-size: 30px;">${{product.product.price}}</div>
+        {% endif %}
+        <div style="display: none;" class="id" value="{{product.product.id}}">{{product.product.id}}</div>
+        
+        <br>
+    <div class="row justify-content-center">
+    <div class="col-md-2">Quantity:  </div>
+    <div class="col-md-2">
+    <select class="form-select form-select-sm" style="width: 100px;" id="quantity">
+      <option selected value="{{product.qty}}">{{product.qty}}</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+
+    </select>
+    </div>
+    </div>
+    <br>
+    
+
+        <div><button style="background-color: #343638;padding: 5px; border-radius: 5px;border-color: white;"><a style="display: inline-block; text-decoration: none;color: white; font-size: medium;font-weight: bold;" href="{% url 'home' %}">Home</a></button>
+                    <button class="btn btn-secondary update-cart" data-index="{{product.product.id}}"  style="background-color: #343638;padding: 5px; border-radius: 5px;border-color: white;color: white; font-size: medium;font-weight: bold;margin-left: 20px;">Update</button>
+             <button class="btn btn-danger delete-cart" data-index="{{product.product.id}}"  style="padding: 5px; border-radius: 5px;border-color: white;color: white; font-size: medium;font-weight: bold;margin-left: 20px;">Remove</button>
+
+
+        </div>
+  </div>
+</div>
+
+                    {% endfor %}
+                    {% else %}
+                    <br>
+                    <br>
+                    <div id="emptycart" style="font-weight: 600;font-size: 30px;text-align: center;">Buy Something you poor Bitch!</div>
+                    {% endif %}
+
+        </div>
+    </div>
+    
+    <div style="display: flex;flex-direction: row; background-color: #343638;margin: 70px;color: white;padding: 20px;">
+      
+    
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Items</h5>
+      {% for product in products %}
+      <div>{{product.product.name}}
+</div> 
+     {% endfor %}
+
+      </div>
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Quantity</h5>
+        {% for product in products %}
+      <div>{{product.qty}}</div>
+      {% endfor %}
+
+      </div>
+      <div style="display: flex;flex-direction: column;flex: 1;">
+        <h5>Subtotal</h5>
+        {% for product in products %}
+        {% if product.product.on_sale %}
+      <div>{{product.product.sale_price}} x {{ product.qty}}= ${{product.sub_total}}</div> 
+      {% else %}
+      <div>{{product.product.price}} x {{ product.qty}}= ${{product.sub_total}}</div> 
+      {% endif %}
+      {% endfor %}
+      <hr>
+      <h5>Total:  ${{total_price}}</h5>
+        <a class="btn btn-success" style="width: 100px;" href="{% url 'check_out' %}">Check out</a>
+
+      </div>
+    </div>
+
+<br><br><br><br><br><br><br><br>
+
+<script>
+    const buttons=document.querySelectorAll('.update-cart')
+    buttons.forEach(function(button){
+        button.addEventListener('click',function(){
+            
+            fetch('/cart/update/',{
+      method:'post',
+      body:JSON.stringify({
+        product_id:button.dataset.index,
+        product_qty:button.parentElement.parentElement.querySelector('#quantity').value
+      })
+      })
+    .then(function(response){
+      return response.json()
+      // document.querySelector('#cart_element').innerHTML=
+    })
+    .then(function(data){
+
+      document.querySelector('#cart_element').innerHTML=data.quantity;
+      location.reload();
+    })
+    
+  
+    
+        })
+    })
+       
+</script>
+<script>
+    const button=document.querySelectorAll('.delete-cart')
+    button.forEach(function(button){
+        button.addEventListener('click',function(){
+            
+            
+    fetch('/cart/delete/',{
+      method:'post',
+      body:JSON.stringify({
+        product_id:button.dataset.index,
+    
+      })
+      })
+    .then(function(response){
+      return response.json()
+      
+    })
+    .then(function(data){
+      document.querySelector('#cart_element').innerHTML=data.quantity;
+      button.parentElement.parentElement.parentElement.style.display='none';
+      document.querySelector('#emptycart').style.display='block'; 
+      location.reload();   
+      
+      
+    })
+    
+  
+    
+        })
+    })
+
+</script>
+{% include 'store/footer.html' %}
+{% endblock %}
