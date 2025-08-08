@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-rx(w7ok8!u&urax7wt5&mxoj37zl5@ur8=bt7voqys4f!4kl^3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ecommercesite-production-b0a8.up.railway.app','https://ecommercesite-production-b0a8.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://ecommercesite-production-b0a8.up.railway.app']
+ALLOWED_HOSTS = ['zucchini-fulfillment-production.up.railway.app','https://zucchini-fulfillment-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://zucchini-fulfillment-production.up.railway.app']
 
 
 # Application definition
