@@ -16,9 +16,9 @@ import uuid
 
 # Create your views here.
 def success(request):
-  return render(request,'success.html')
+  return render(request,'payment/success.html')
 def failure(request):
-  return render(request,'failure.html')
+  return render(request,'payment/failure.html')
 def check_out(request):
   
   cart=request.session.get("cart",{})
@@ -62,7 +62,7 @@ def billing_info(request):
     paypal_dict={
       'business':settings.PAYPAL_RECEIVER_EMAIL,
       'amount':totals(request)['total_price'],
-      'item_name':'hygiene_atoms',
+      'item_name':[product.name for product in products],
       'no_shipping':'2',
       'invoice':str(uuid.uuid4()),
       'currency_code':'USD',

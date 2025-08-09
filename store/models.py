@@ -58,7 +58,7 @@ class UserProfile(models.Model):
   state=models.CharField(max_length=100,blank=True)
   zipcode=models.CharField(max_length=100,blank=True)
   country=models.CharField(max_length=100,blank=True)
-  cart=models.CharField(max_length=1000,blank=True,null=True)
+  cart=models.CharField(max_length=1000,blank=True,null=True,default="")
   def __str__(self):
     return self.user.username
 
