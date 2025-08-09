@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-rx(w7ok8!u&urax7wt5&mxoj37zl5@ur8=bt7voqys4f!4kl^3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['zucchini-fulfillment-production.up.railway.app','bahloolecom.info.gf','https://bahloolecom.info.gf']
+ALLOWED_HOSTS = ['bahloolecom.info.gf','https://bahloolecom.info.gf']
 CSRF_TRUSTED_ORIGINS = ['https://bahloolecom.info.gf']
 
 
