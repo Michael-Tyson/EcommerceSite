@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 urlpatterns=[
   path("checkout/",views.check_out,name="check_out"),
@@ -6,7 +6,11 @@ urlpatterns=[
   path("generateorder/",views.generate_order,name="generate_order"),
   path("shippedorder/",views.shipped_orders,name="shipped_orders"),
   path("unshippedorders/",views.unshipped_orders,name="unshipped_orders"),
-  path("vieworder/<int:orderid>",views.view_order,name="view_order")
+  path("vieworder/<int:orderid>",views.view_order,name="view_order"),
+  path("paymentsuccess/",views.success,name="payment_success"),
+  path("paymentfailure/",views.failure,name="payment_failure"),
+
+  path("paypal/",include("paypal.standard.ipn.urls"))
   
 
 

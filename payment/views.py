@@ -7,9 +7,20 @@ from .models import ShippingAddress
 from .forms import ShippingAddressForm,BillingForm
 from django.contrib.auth.models import User
 from store.context_processor import totals
+#paypal stuff
+from django.urls import reverse
+from django.conf import settings
+from paypal.standard.forms import PayPalPaymentsForm
+import uuid
+
 
 # Create your views here.
+def success(request):
+  return render(request,'success.html')
+def failure(request):
+  return render(request,'failure.html')
 def check_out(request):
+  
   cart=request.session.get("cart",{})
 
   keys=list()
@@ -47,8 +58,22 @@ def billing_info(request):
 
   
     request.session["shipping_info"]=request.POST
+    host=request.get_host()
+    paypal_dict={
+      'business':settings.PAYPAL_RECEIVER_EMAIL,
+      'amount':totals(request)['total_price'],
+      'item_name':'hygiene_atoms',
+      'no_shipping':'2',
+      'invoice':str(uuid.uuid4()),
+      'currency_code':'USD',
+      'notify_url':'https://{}{}'.format(host,reverse("paypal-ipn")),
+      'return_url':'https://{}{}'.format(host,reverse("payment_success")),
+      'cancel_url':'https://{}{}'.format(host,reverse("payment_failure")),
+
+    }
+    paypal_form=PayPalPaymentsForm(initial=paypal_dict)
     billingform=BillingForm()
-    return render(request,"payment/billing_info.html",{"shipping_info":request.POST,"billing_form":billingform,'products':productslist})
+    return render(request,"payment/billing_info.html",{"shipping_info":request.POST,"billing_form":billingform,'products':productslist,'paypal_form':paypal_form})
   else:
     messages.success(request,"access denied")
     return redirect("home")
@@ -173,5 +198,5 @@ def view_order(request,orderid):
         return redirect("unshipped_orders")
 
         
-      
+
     return render(request,'payment/view_order.html',context)

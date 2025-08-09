@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'store',
     'shopping_cart',
     'payment',
-    'whitenoise.runserver_nostatic'
+    'whitenoise.runserver_nostatic',
+    'paypal.standard.ipn'
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,6 @@ STATIC_ROOT=BASE_DIR/'staticfiles'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#paypal stuff
+PAYPAL_TEST=True
+PAYPAL_RECEIVER_EMAIL='ecommercesite@ecom.com'
