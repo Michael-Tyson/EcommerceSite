@@ -1,1 +1,16 @@
-<h3>payment failed</h3>
+{% extends 'store/base.html' %}
+{% block content %}
+<header class="bg-danger py-2">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Payment Failed</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Some error occured</p>
+                </div>
+            </div>
+        </header>
+        
+<br><br><br><br>
+<center><h3>There was some error processing your payment..</h3><a href="{% url 'check_out' %}"><button class="btn btn-success">Try Again</button></a></center>
+<br><br><br><br><br><br>
+{% include 'store/footer.html' %}
+{% endblock %}

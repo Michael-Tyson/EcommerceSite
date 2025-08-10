@@ -16,9 +16,22 @@ import uuid
 
 # Create your views here.
 def success(request):
-  return render(request,'payment/success.html')
+    
+  sender=request.META.get("HTTP_REFERER","")
+  if sender=="https://www.sandbox.paypal.com/":
+    request.session.pop("cart","")
+    return render(request,'payment/success.html')
+  else:
+    messages.success(request,"access denied")
+    return redirect("home")
 def failure(request):
-  return render(request,'payment/failure.html')
+  sender=request.META.get("HTTP_REFERER","")
+  if sender=="https://www.sandbox.paypal.com/":
+    return render(request,'payment/failure.html')
+  else:
+    messages.success(request,"access denied")
+    return redirect("home")
+  
 def check_out(request):
   
   cart=request.session.get("cart",{})
@@ -59,20 +72,76 @@ def billing_info(request):
   
     request.session["shipping_info"]=request.POST
     host=request.get_host()
+    invoice=str(uuid.uuid4())
     paypal_dict={
       'business':settings.PAYPAL_RECEIVER_EMAIL,
       'amount':totals(request)['total_price'],
       'item_name':[product.name for product in products],
       'no_shipping':'2',
-      'invoice':str(uuid.uuid4()),
+      'invoice':invoice,
       'currency_code':'USD',
       'notify_url':'https://{}{}'.format(host,reverse("paypal-ipn")),
       'return_url':'https://{}{}'.format(host,reverse("payment_success")),
       'cancel_url':'https://{}{}'.format(host,reverse("payment_failure")),
+      
 
     }
     paypal_form=PayPalPaymentsForm(initial=paypal_dict)
+    
+
     billingform=BillingForm()
+    #generating order using data stored in the cart 
+    shippingdata=request.session["shipping_info"]
+    phone=shippingdata["shipping_phone"]
+    fullname=shippingdata["shipping_full_name"]
+    address1=shippingdata["shipping_address1"]
+    address2=shippingdata["shipping_address1"]
+    city=shippingdata["shipping_city"]
+    zipcode=shippingdata["shipping_zipcode"]
+    state=shippingdata["shipping_state"]
+    country=shippingdata["shipping_country"]
+
+    address=f"{address1}\n{address2}\n{city}\n{zipcode}\n{state}\n{zipcode}\n{country}"
+    amount=totals(request)
+    amount=amount["total_price"]
+    if request.user.is_authenticated:
+      user=User.objects.get(id=request.user.id)
+      order=Order(user=user,phone=phone,shipping_full_name=fullname,address=address,amount=amount,invoice=invoice)
+      order.save()
+      cart=request.session.get("cart",{})
+
+      for key,value in cart.items():
+         product=Product.objects.get(id=key)
+         user=User.objects.get(id=request.user.id)
+         price=product.price if not product.on_sale else product.sale_price
+         user=User.objects.get(id=request.user.id)
+         quantity=value["qty"]
+         orderitem=Orderitems.objects.create(order=order,user=user,product=product,price=price,quantity=quantity)
+         orderitem.save()
+      
+      userprofile=UserProfile.objects.get(user=user)
+      userprofile.cart=""
+      userprofile.save()
+      messages.success(request,"order placed successfully")
+
+    else:
+       order=Order(phone=phone,shipping_full_name=fullname,address=address,amount=amount,invoice=invoice)
+       order.save()
+       cart=request.session.get("cart",{})
+
+       for key,value in cart.items():
+         product=Product.objects.get(id=key)
+         
+         price=product.price
+         quantity=value["qty"]
+         orderitem=Orderitems.objects.create(order=order,product=product,price=price,quantity=quantity)
+         orderitem.save()
+       del request.session["cart"]
+    
+
+       messages.success(request,"order placed successfully")
+      
+      
     return render(request,"payment/billing_info.html",{"shipping_info":request.POST,"billing_form":billingform,'products':productslist,'paypal_form':paypal_form})
   else:
     messages.success(request,"access denied")
@@ -108,7 +177,7 @@ def generate_order(request):
          quantity=value["qty"]
          orderitem=Orderitems.objects.create(order=order,user=user,product=product,price=price,quantity=quantity)
          orderitem.save()
-         print("hello")
+         
       
       del request.session['cart']
       userprofile=UserProfile.objects.get(user=user)

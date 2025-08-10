@@ -73,7 +73,7 @@
         <form action="{% url 'generate_order' %}" method="post">
         <h3>Shipping information</h3>
         {% csrf_token %}
-        {{billing_form}}
+        {{billing_form.as_p}}
         <input type="submit" value="Pay Now">
 
   </div>

@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-rx(w7ok8!u&urax7wt5&mxoj37zl5@ur8=bt7voqys4f!4kl^3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['zucchini-fulfillment-production.up.railway.app','https://zucchini-fulfillment-production.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://zucchini-fulfillment-production.up.railway.app']
+ALLOWED_HOSTS = ['zucchini-fulfillment-production.up.railway.app','https://zucchini-fulfillment-production.up.railway.app','127.0.0.1','http://127.0.0.1:8000/','http://localhost:8000/','localhost','https://55164bec2a0b.ngrok-free.app','55164bec2a0b.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://zucchini-fulfillment-production.up.railway.app','https://127.0.0.1:8000/','http://localhost:8000/','https://55164bec2a0b.ngrok-free.app']
 
 
 # Application definition

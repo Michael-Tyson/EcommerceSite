@@ -27,6 +27,8 @@ class Order(models.Model):
   date=models.DateTimeField(auto_now_add=True)
   shipped=models.BooleanField(default=False)
   shipping_date=models.DateTimeField(null=True,blank=True)
+  invoice=models.CharField(null=True,blank=True)
+  paid=models.BooleanField(default=False)
   def __str__(self):
     return f"Order-{self.id}"
 class Orderitems(models.Model):
