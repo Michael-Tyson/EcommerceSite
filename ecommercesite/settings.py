@@ -144,5 +144,5 @@ STATIC_ROOT=BASE_DIR/'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #paypal stuff
-PAYPAL_TEST=True
+PAYPAL_TEST=False
 PAYPAL_RECEIVER_EMAIL='ecommercesite@ecom.com'
